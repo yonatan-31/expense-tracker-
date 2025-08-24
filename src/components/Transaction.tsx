@@ -17,7 +17,9 @@ const Transaction = () => {
                 </div>
             </div>
             <div>
-                <Button className='text-sm text-red-600 bg-red-300 '>
+                <Button 
+                variant="ghost"
+                className='text-sm text-red-600 bg-red-300 '>
                     -400  <TrendingDown />
                 </Button>
             </div>

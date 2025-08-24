@@ -1,18 +1,22 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useSignUp } from "@clerk/clerk-react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
+import { UserRoundPen } from 'lucide-react';
+import { Download } from 'lucide-react';
 
 export default function CustomSignupForm() {
   const { signUp, setActive, isLoaded } = useSignUp();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState("");
   const navigate = useNavigate();
+  const [profileImg, setProfileImg] = useState("")
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -43,7 +47,17 @@ export default function CustomSignupForm() {
       setError(err.errors?.[0]?.message || "Verification failed");
     }
   }
+  const handleClick = () => {
+    fileInputRef.current?.click(); // programmatically open file explorer
+  };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file); // temporary preview
+      setProfileImg(imageUrl); // update state with new image
+    }
+  };
   return (
     <div className="flex h-screen">
       {/* Left panel */}
@@ -57,6 +71,27 @@ export default function CustomSignupForm() {
 
           {!pendingVerification ? (
             <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
+              <div className="flex justify-center">
+                <div className="relative w-24 h-24 rounded-full text-[#f56565] bg-[#f56565]/20 flex items-center justify-center">
+                  {profileImg ? <img className="w-full h-full object-cover rounded-full" src={profileImg} alt="" /> : <UserRoundPen size={30} />}
+                  <div onClick={handleClick} className="absolute bottom-0 right-0 w-7 h-7 rounded-full text-white bg-[#f56565]/80 flex items-center justify-center">
+                    <Download size={18} />
+                  </div>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                    accept="image/*"
+                    className="hidden"
+                  />
+                </div>
+              </div>
+              <Input
+                placeholder="Full Name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
               <Input
                 placeholder="Email"
                 type="email"
