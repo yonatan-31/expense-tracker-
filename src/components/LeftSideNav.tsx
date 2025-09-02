@@ -1,22 +1,37 @@
 import { Button } from './ui/button'
 import { LayoutDashboard } from "lucide-react";
+import { useUser } from "@/context/UserContext";
+import { useClerk } from "@clerk/clerk-react";
+import { useNavigate } from "react-router-dom";
+import { BanknoteArrowDown } from 'lucide-react';
+import { BanknoteArrowUp } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 
-interface LeftSideNavProps  {
+interface LeftSideNavProps {
   setActive: (id: string) => void;
   active: string;
 };
 
 const LeftSideNav = ({ setActive, active }: LeftSideNavProps) => {
+  const { userData } = useUser();
+
+  const clerk = useClerk(); // get the Clerk instance
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await clerk.signOut();
+    navigate("/"); // redirect to login page
+  };
 
   return (
     <div className="w-40 md:w-50 xl:w-60 flex flex-col justify-start items-center">
       <div className="flex flex-col justify-center items-center my-5">
         <img
-          className="w-15 h-15 rounded-full object-cover mb-2"
-          src="/man-avatar.avif"
+          className="w-20 h-20 rounded-full object-cover mb-2"
+          src={`http://localhost:4000${userData?.profile_img}`}
           alt="Profile Picture"
         />
-        <h2>Mike William</h2>
+        <h2 className='text-xl capitalize font-semibold'>{userData?.name}</h2>
       </div>
       <div className="flex flex-col gap-4 w-full p-4">
         <Button
@@ -36,7 +51,7 @@ const LeftSideNav = ({ setActive, active }: LeftSideNavProps) => {
           onClick={() => setActive("income")}
         >
           <span className="w-5 h-5 flex items-center justify-center">
-            <LayoutDashboard />
+            <BanknoteArrowUp />
           </span>
           <span className="flex-1 text-left">Income</span>
         </Button>
@@ -47,7 +62,7 @@ const LeftSideNav = ({ setActive, active }: LeftSideNavProps) => {
           onClick={() => setActive("expense")}
         >
           <span className="w-5 h-5 flex items-center justify-center">
-            <LayoutDashboard />
+            <BanknoteArrowDown />
           </span>
           <span className="flex-1 text-left">Expense</span>
         </Button>
@@ -55,10 +70,10 @@ const LeftSideNav = ({ setActive, active }: LeftSideNavProps) => {
         <Button
           variant="ghost"
           className={`w-full ${active === "logout" ? "bg-[#f56565] text-white" : ""}`}
-          onClick={() => setActive("logout")}
+          onClick={handleLogout}
         >
           <span className="w-5 h-5 flex items-center justify-center">
-            <LayoutDashboard />
+            <LogOut />
           </span>
           <span className="flex-1 text-left">Logout</span>
         </Button>

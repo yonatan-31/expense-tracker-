@@ -1,14 +1,15 @@
 import Add from '@/components/Add'
 import IncomeOverview from '@/components/IncomeOverview'
 import Sources from '@/components/Sources'
-import React from 'react'
+import { useState } from 'react';
 
 const Income = () => {
+   const [isOpen, setIsOpen] = useState(false);
   return (
     <div className=' h-screen p-5 bg-gray-50'>
-       <IncomeOverview /> 
+       <IncomeOverview setIsOpen={setIsOpen}/> 
        <Sources name="Income Sources"/>
-       <Add />
+       <Add isOpen={isOpen} setIsOpen={setIsOpen}/>
     </div>
   )
 }

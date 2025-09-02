@@ -2,8 +2,13 @@ import React from 'react'
 import { Button } from './ui/button'
 import { Plus } from 'lucide-react';
 
+type AddProps = {
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>; // so you can close it
+};
 
-const IncomeOverview = () => {
+const IncomeOverview = ({setIsOpen}:AddProps) => {
+
+ 
     return (
         <div className='flex-1 flex-col rounded-lg shadow mb-5 bg-white'>
             <div className='flex justify-between items-center p-2 '>
@@ -11,7 +16,7 @@ const IncomeOverview = () => {
                     <h1 className='font-semibold text-xl'>Income Overview</h1>
                     <p className='text-gray-500'>Track your earning over time and analyze your income trends</p>
                 </div>
-                <Button className="text-sm text-white bg-amber-600 hover:bg-amber-700 border-none">
+                <Button onClick={() => setIsOpen(true)} className="text-sm text-white bg-amber-600 hover:bg-amber-700 border-none">
                     <Plus /> Add Income
                 </Button>
             </div>

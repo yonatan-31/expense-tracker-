@@ -1,7 +1,4 @@
 import { useState } from 'react';
-import { useClerk } from "@clerk/clerk-react";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
 import Dashbored from "../components/Dashbored";
 import LeftSideNav from "../components/LeftSideNav";
 import Income from './Income';
@@ -21,19 +18,13 @@ const Home = () => {
                 return null;
         }
     };
-    const clerk = useClerk(); // get the Clerk instance
-    const navigate = useNavigate();
-
-    const handleLogout = async () => {
-        await clerk.signOut();
-        navigate("/"); // redirect to login page
-    };
 
     return (
         <>
-            <div className='flex justify-between items-center sticky border-b-2 p-4'>
-                <div className="">Expense Tracker</div>
-                <Button onClick={handleLogout}>Logout</Button>
+            <div className='flex items-center sticky border-b-2 p-4'>
+                <div className="font-[cursive] text-2xl font-semibold text-gray-800 tracking-tight text-center drop-shadow-lg">
+                    Expense Tracker
+                </div>
             </div>
             <div className='flex w-full h-screen'>
                 <LeftSideNav active={active} setActive={setActive} />
