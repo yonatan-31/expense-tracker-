@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import axios from "axios";
 import { useUser as useClerkUser } from "@clerk/clerk-react";
 
+const API_BASE = import.meta.env.VITE_API_BASE
 
 interface UserData {
   id: string;
@@ -32,7 +33,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
     const fetchUser = async () => {
       try {
-        const res = await axios.get(`http://localhost:4000/users/${user.id}`);
+        const res = await axios.get(`${API_BASE}/users/${user.id}`);
         setUserData(res.data); 
         
       } catch (error) {

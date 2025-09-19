@@ -2,7 +2,8 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import type { RecentTransaction, ExpenseItem, IncomeItem } from "../types/transactions"
 
-const API_BASE = "http://localhost:4000"
+const API_BASE = import.meta.env.VITE_API_BASE
+
 
 interface Summary {
   totalIncome: number

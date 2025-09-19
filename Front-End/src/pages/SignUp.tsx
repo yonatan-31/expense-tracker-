@@ -8,6 +8,8 @@ import { Download } from 'lucide-react';
 import { LoaderCircle } from 'lucide-react';
 import axios from "axios";
 
+const API_BASE = import.meta.env.VITE_API_BASE
+
 export default function CustomSignupForm() {
   const { signUp, setActive, isLoaded } = useSignUp();
   const { isSignedIn } = useUser();
@@ -22,7 +24,6 @@ export default function CustomSignupForm() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
-  console.log("selectedFile", selectedFile);
 
 
   async function handleSubmit(e: React.FormEvent) {
@@ -65,7 +66,7 @@ export default function CustomSignupForm() {
         if (selectedFile) {
           formData.append("profile", selectedFile); // must match multer's field name
         }
-        await axios.post("http://localhost:4000/users", formData, {
+        await axios.post(`${API_BASE}/users`, formData, {
           headers: {
             "Content-Type": "multipart/form-data", // Axios requires this explicitly
           },

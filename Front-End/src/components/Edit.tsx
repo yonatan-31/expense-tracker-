@@ -7,6 +7,8 @@ import axios from "axios";
 import { useUser } from "@/context/UserContext";
 import type { RecentTransaction } from "../types/transactions";
 
+const API_BASE = import.meta.env.VITE_API_BASE
+
 type EditProps = {
   edit: RecentTransaction;
   type: string;
@@ -55,7 +57,7 @@ const Edit = ({ edit, type, onClose, onUpdate, onDelete }: EditProps) => {
     e.preventDefault();
     const value = { source, amount, date, emoji };
     const res = await axios.patch(
-      `http://localhost:4000/${type}/${userData!.id}/${id}`,
+      `${API_BASE}/${type}/${userData!.id}/${id}`,
       value,
       { headers: { "Content-Type": "application/json" } }
     );

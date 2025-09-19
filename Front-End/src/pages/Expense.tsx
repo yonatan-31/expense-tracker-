@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useUser } from "@/context/UserContext";
 import type { ExpenseItem, RecentTransaction } from '../types/transactions';
+const API_BASE = import.meta.env.VITE_API_BASE
 
 const Expense = () => {
   const { userData } = useUser();
@@ -14,7 +15,7 @@ const Expense = () => {
 
     const fetchIncome = async () => {
       try {
-        const res = await axios.get(`http://localhost:4000/expense/${userData.id}`);
+        const res = await axios.get(`${API_BASE}/expense/${userData.id}`);
         const normalizedIncome = res.data.map((item: ExpenseItem) => ({
           id: item.id,
           amount: item.amount,

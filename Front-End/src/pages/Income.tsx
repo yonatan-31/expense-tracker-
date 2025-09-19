@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useUser } from "@/context/UserContext";
 import type { IncomeItem, RecentTransaction } from '../types/transactions';
 
+const API_BASE = import.meta.env.VITE_API_BASE
 
 
 const Income = () => {
@@ -15,7 +16,7 @@ const Income = () => {
     if (!userData?.id) return;
     (async () => {
       try {
-        const res = await axios.get(`http://localhost:4000/income/${userData.id}`);
+        const res = await axios.get(`${API_BASE}/income/${userData.id}`);
 
         const normalizedIncome = res.data.map((item: IncomeItem) => ({
           id: item.id,

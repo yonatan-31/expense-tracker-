@@ -28,7 +28,7 @@ const LeftSideNav = ({ setActive, active }: LeftSideNavProps) => {
       <div className="flex flex-col justify-center items-center my-5">
         <img
           className="w-20 h-20 rounded-full object-cover mb-2"
-          src={`http://localhost:4000${userData?.profile_img}`}
+          src={userData?.profile_img || "/default-avatar.png"}
           alt="Profile Picture"
         />
         <h2 className='text-xl capitalize font-semibold'>{userData?.name}</h2>

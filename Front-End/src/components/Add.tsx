@@ -7,6 +7,7 @@ import axios from "axios";
 import { useUser } from "@/context/UserContext";
 import type { RecentTransaction } from '../types/transactions';
 
+const API_BASE = import.meta.env.VITE_API_BASE
 
 type AddProps = {
     type: string
@@ -48,7 +49,7 @@ const Add = ({ isOpen, setIsOpen, type, setList }: AddProps) => {
         console.log("handleSubmit", value);
 
         e.preventDefault();
-        const res = await axios.post(`http://localhost:4000/${type}/${userData!.id}`, value, {
+        const res = await axios.post(`${API_BASE}/${type}/${userData!.id}`, value, {
             headers: {
                 "Content-Type": "application/json"
             },
