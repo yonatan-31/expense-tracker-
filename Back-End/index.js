@@ -1,10 +1,14 @@
 import express from "express";
 import cors from "cors";
 import multer from "multer";
-import path from "path";
-import fs from "fs";
-import { fileURLToPath } from "url";
+import stream from "stream";
 import pkg from "pg";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_KEY
+);
 
 const { Pool } = pkg;
 const pool = new Pool({
@@ -17,42 +21,59 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Static folder for uploaded images
-const uploadFolder = path.join(__dirname, "uploads");
-if (!fs.existsSync(uploadFolder)) fs.mkdirSync(uploadFolder);
-
-// Multer setup
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, uploadFolder),
-    filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
-});
-const upload = multer({ storage });
+const upload = multer();
 
 // ------------------- ROUTES -------------------
 
 // Add new user
 app.post("/users", upload.single("profile"), async (req, res) => {
-    const { id, email, name } = req.body;          // text fields from FormData
-    const profileImg = req.file ? `/uploads/${req.file.filename}` : null; // file path
-    try {
-        await pool.query(
-            `INSERT INTO users (id, email, name, profile_img)
-   VALUES ($1, $2, $3, $4)
-   ON CONFLICT (id) DO UPDATE
-   SET email = EXCLUDED.email,
-       name = EXCLUDED.name,
-       profile_img = COALESCE(EXCLUDED.profile_img, users.profile_img)`,
-            [id, email, name, profileImg]
-        );
+  const { id, email, name } = req.body;
 
-        res.json({ success: true });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Failed to insert user" });
+  let profileImg = null;
+
+  try {
+    if (req.file) {
+      // Convert buffer to readable stream
+      const bufferStream = new stream.PassThrough();
+      bufferStream.end(req.file.buffer);
+
+      const fileExt = req.file.originalname.split(".").pop();
+      const fileName = `profiles/${id}-${Date.now()}.${fileExt}`;
+
+      const { data, error } = await supabase.storage
+        .from("avatars") // your storage bucket name
+        .upload(fileName, bufferStream, {
+          contentType: req.file.mimetype,
+          upsert: true,
+        });
+
+      if (error) throw error;
+
+      // Get public URL
+      const { publicUrl } = supabase
+        .storage
+        .from("avatars")
+        .getPublicUrl(fileName);
+
+      profileImg = publicUrl;
     }
+
+    // Insert/update user in DB
+    await pool.query(
+      `INSERT INTO users (id, email, name, profile_img)
+       VALUES ($1, $2, $3, $4)
+       ON CONFLICT (id) DO UPDATE
+       SET email = EXCLUDED.email,
+           name = EXCLUDED.name,
+           profile_img = COALESCE(EXCLUDED.profile_img, users.profile_img)`,
+      [id, email, name, profileImg]
+    );
+
+    res.json({ success: true, profileImg });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to insert user" });
+  }
 });
 
 
@@ -374,7 +395,6 @@ app.get("/summary/:userId", async (req, res) => {
 });
 
 
-// Serve uploaded images
-app.use("/uploads", express.static(uploadFolder));
 
-app.listen(4000, () => console.log("✅ Backend running on http://localhost:4000"));
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => console.log(`✅ Backend running on port ${PORT}`));
