@@ -1,20 +1,15 @@
 import express from "express";
 import cors from "cors";
 import multer from "multer";
-import pkg from "pg";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
+import pkg from "pg";
 
 const { Pool } = pkg;
-
-// PostgreSQL pool (local pgAdmin)
 const pool = new Pool({
-    user: "postgres",
-    host: "localhost",
-    database: "expense tracker",
-    password: "yonatan7525",
-    port: 5432,
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }, // required for Supabase SSL
 });
 
 // Express app
