@@ -56,6 +56,7 @@ app.post("/users", upload.single("profile"), async (req, res) => {
 
             profileImg = publicUrl;
         }
+        console.log("Saving profileImg:", profileImg);
 
         // Insert/update user in DB
         await pool.query(
