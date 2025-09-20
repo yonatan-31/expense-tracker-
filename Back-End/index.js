@@ -6,8 +6,8 @@ import pkg from "pg";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_KEY
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_KEY
 );
 
 const { Pool } = pkg;
@@ -27,53 +27,52 @@ const upload = multer();
 
 // Add new user
 app.post("/users", upload.single("profile"), async (req, res) => {
-  const { id, email, name } = req.body;
+    const { id, email, name } = req.body;
 
-  let profileImg = null;
+    let profileImg = null;
 
-  try {
-    if (req.file) {
-      // Convert buffer to readable stream
-      const bufferStream = new stream.PassThrough();
-      bufferStream.end(req.file.buffer);
+    try {
+        if (req.file) {
+            // Convert buffer to readable stream
 
-      const fileExt = req.file.originalname.split(".").pop();
-      const fileName = `profiles/${id}-${Date.now()}.${fileExt}`;
+            const fileExt = req.file.originalname.split(".").pop();
+            const fileName = `profiles/${id}-${Date.now()}.${fileExt}`;
 
-      const { data, error } = await supabase.storage
-        .from("avatars") // your storage bucket name
-        .upload(fileName, bufferStream, {
-          contentType: req.file.mimetype,
-          upsert: true,
-        });
+            const { data, error } = await supabase.storage
+                .from("avatars")
+                .upload(fileName, req.file.buffer, {
+                    contentType: req.file.mimetype,
+                    upsert: true,
+                });
 
-      if (error) throw error;
 
-      // Get public URL
-      const { publicUrl } = supabase
-        .storage
-        .from("avatars")
-        .getPublicUrl(fileName);
+            if (error) throw error;
 
-      profileImg = publicUrl;
-    }
+            // Get public URL
+            const { publicUrl } = supabase
+                .storage
+                .from("avatars")
+                .getPublicUrl(fileName);
 
-    // Insert/update user in DB
-    await pool.query(
-      `INSERT INTO users (id, email, name, profile_img)
+            profileImg = publicUrl;
+        }
+
+        // Insert/update user in DB
+        await pool.query(
+            `INSERT INTO users (id, email, name, profile_img)
        VALUES ($1, $2, $3, $4)
        ON CONFLICT (id) DO UPDATE
        SET email = EXCLUDED.email,
            name = EXCLUDED.name,
            profile_img = COALESCE(EXCLUDED.profile_img, users.profile_img)`,
-      [id, email, name, profileImg]
-    );
+            [id, email, name, profileImg]
+        );
 
-    res.json({ success: true, profileImg });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to insert user" });
-  }
+        res.json({ success: true, profileImg });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to insert user" });
+    }
 });
 
 
@@ -192,7 +191,7 @@ app.get("/expense/edit/:userId/:itemId", async (req, res) => {
 });
 app.delete("/income/:userId/:itemId", async (req, res) => {
     const { userId, itemId } = req.params;
-    
+
 
     try {
         const result = await pool.query(
