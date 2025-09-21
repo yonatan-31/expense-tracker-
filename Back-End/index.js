@@ -16,10 +16,19 @@ const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false }, // required for Supabase SSL
 });
+const allowedOrigins = [
+    "https://expense-tracker-eight-ruby-87.vercel.app",
+    "http://localhost:5173"
+];
 
-// Express app
+app.use(
+    cors({
+        origin: allowedOrigins,
+        credentials: true, // if you send cookies or auth headers
+    })
+);
+
 const app = express();
-app.use(cors());
 app.use(express.json());
 
 const upload = multer();
