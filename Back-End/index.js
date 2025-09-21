@@ -21,14 +21,13 @@ const allowedOrigins = [
     "http://localhost:5173"
 ];
 
+const app = express();
 app.use(
     cors({
         origin: allowedOrigins,
         credentials: true, // if you send cookies or auth headers
     })
 );
-
-const app = express();
 app.use(express.json());
 
 const upload = multer();
