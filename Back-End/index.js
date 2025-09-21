@@ -34,8 +34,6 @@ app.post("/users", upload.single("profile"), async (req, res) => {
 
     try {
         if (req.file) {
-            // Convert buffer to readable stream
-
             const fileExt = req.file.originalname.split(".").pop();
             const fileName = `profiles/${id}-${Date.now()}.${fileExt}`;
 
