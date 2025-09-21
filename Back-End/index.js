@@ -1,9 +1,10 @@
 import express from "express";
 import cors from "cors";
 import multer from "multer";
-import stream from "stream";
 import pkg from "pg";
 import { createClient } from "@supabase/supabase-js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
@@ -38,7 +39,7 @@ app.post("/users", upload.single("profile"), async (req, res) => {
             const fileExt = req.file.originalname.split(".").pop();
             const fileName = `profiles/${id}-${Date.now()}.${fileExt}`;
 
-            const { data, error } = await supabase.storage
+            const { error } = await supabase.storage
                 .from("avatars")
                 .upload(fileName, req.file.buffer, {
                     contentType: req.file.mimetype,
@@ -47,16 +48,13 @@ app.post("/users", upload.single("profile"), async (req, res) => {
 
 
             if (error) throw error;
+            const { data, publicURL } = supabase.storage.from("avatars").getPublicUrl(fileName);
 
-            // Get public URL
-            const { publicUrl } = supabase
-                .storage
-                .from("avatars")
-                .getPublicUrl(fileName);
+            // Support both v1 and v2
+            profileImg = data?.publicUrl || publicURL || null;
 
-            profileImg = publicUrl;
+            console.log("Saving profileImg:", profileImg);
         }
-        console.log("Saving profileImg:", profileImg);
 
         // Insert/update user in DB
         await pool.query(
