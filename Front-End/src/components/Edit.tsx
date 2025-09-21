@@ -76,7 +76,7 @@ const Edit = ({ edit, type, onClose, onUpdate, onDelete }: EditProps) => {
 
   const handleDelete = async () => {
     const res = await axios.delete(
-      `http://localhost:4000/${type}/${userData!.id}/${id}`);
+      `${API_BASE}/${type}/${userData!.id}/${id}`);
     onDelete(res.data)
   }
 
