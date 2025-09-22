@@ -25,7 +25,6 @@ export default function CustomSignupForm() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // ✅ Redirect after Clerk confirms user is signed in
   useEffect(() => {
     if (session && isSignedIn) {
       navigate("/home");

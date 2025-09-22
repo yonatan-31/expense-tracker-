@@ -35,7 +35,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       try {
         const res = await axios.get(`${API_BASE}/users/${user.id}`);
         setUserData(res.data); 
-        console.log("userData",res.data);
                
       } catch (error) {
         console.error("Error fetching user:", error);

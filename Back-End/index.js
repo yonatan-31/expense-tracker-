@@ -14,7 +14,7 @@ const supabase = createClient(
 const { Pool } = pkg;
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }, // required for Supabase SSL
+    ssl: { rejectUnauthorized: false },
 });
 const allowedOrigins = [
     "https://expense-tracker-eight-ruby-87.vercel.app",
@@ -25,7 +25,7 @@ const app = express();
 app.use(
     cors({
         origin: allowedOrigins,
-        credentials: true, // if you send cookies or auth headers
+        credentials: true,
     })
 );
 app.use(express.json());

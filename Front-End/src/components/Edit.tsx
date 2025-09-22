@@ -69,7 +69,6 @@ const Edit = ({ edit, type, onClose, onUpdate, onDelete }: EditProps) => {
       emoji: res.data.emoji,
       type: type as "income" | "expense",
     }
-    console.log("edit", normalized);
     onUpdate?.(normalized);
     close();
   };

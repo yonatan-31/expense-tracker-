@@ -21,7 +21,6 @@ export const useSummary = (userId?: string) => {
       try {
         const res = await axios.get(`${API_BASE}/summary/${userId}`)
         setData(res.data)
-        console.log("summary", res.data);
 
       } catch (err: any) {
         setError(err.message || "Failed to fetch summary")
@@ -43,7 +42,6 @@ export const useRecentTransactions = (userId?: string) => {
       try {
         const res = await axios.get(`${API_BASE}/recentTransaction/${userId}`)
         setData(res.data)
-        console.log("recentTransaction", res.data);
 
       } catch (err: any) {
         setError(err.message || "Failed to fetch transactions")
