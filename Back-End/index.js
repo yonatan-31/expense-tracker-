@@ -17,7 +17,7 @@ const pool = new Pool({
     ssl: { rejectUnauthorized: false },
 });
 const allowedOrigins = [
-    "https://expense-tracker-eight-ruby-87.vercel.app",
+    "https://expense-tracker8.vercel.app",
     "http://localhost:5173"
 ];
 
