@@ -33,7 +33,7 @@ const Expense = () => {
     fetchIncome();
   }, [userData?.id]);
   return (
-    <div className='flex justify-center h-screen p-5 bg-gray-50'>
+    <div className='flex justify-center h-screen p-5 bg-gray-50 relative'>
       <div className='w-full xl:max-w-[90%]'>
         <Overview type="expense" list={list} setList={setList} />
         <ExpenseCategories list={list} setList={setList} />

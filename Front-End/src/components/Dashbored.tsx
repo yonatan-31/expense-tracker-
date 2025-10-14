@@ -22,6 +22,7 @@ const Dashbored = () => {
     { name: "Total Expense", value: summary?.totalExpense || 0 },
   ]
 
+console.log("recentTransactions", summary);
 
   return (
     <div className='flex justify-center bg-gray-50'>

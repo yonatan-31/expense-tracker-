@@ -4,6 +4,8 @@ import Add from '@/components/Add'
 import { useState } from 'react';
 import BarChart from "./BarChart"
 import type { RecentTransaction } from '../types/transactions';
+import { useEffect } from 'react';
+import { useUser } from "@/context/UserContext";
 
 type OverviewProps = {
     type: string
@@ -12,7 +14,15 @@ type OverviewProps = {
 };
 
 const Overview = ({ type, list, setList }: OverviewProps) => {
-    const [isOpen, setIsOpen] = useState(false);   
+    const [isOpen, setIsOpen] = useState(false);
+    const { openAddType, setOpenAddType } = useUser();
+    
+    useEffect(() => {
+        if (openAddType === type) {
+            setIsOpen(true);
+            setOpenAddType(null);
+        }
+    }, [openAddType, type, setOpenAddType]);   
     
     return (
         <div className='hidden md:flex flex-col rounded-lg shadow mb-5 bg-white w-full '>

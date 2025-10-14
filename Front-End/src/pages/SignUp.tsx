@@ -4,11 +4,14 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Link, useNavigate } from "react-router-dom";
 import { UserRoundPen, Download, LoaderCircle } from "lucide-react";
+import { useUser as useUserContext } from "@/context/UserContext";
+
 import axios from "axios";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 
 export default function CustomSignupForm() {
+  const { setUserData } = useUserContext();
   const { signUp, setActive, isLoaded } = useSignUp();
   const { isSignedIn } = useUser();
   const { session } = useSession(); // 👈 new
@@ -25,11 +28,11 @@ export default function CustomSignupForm() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (session && isSignedIn) {
-      navigate("/home");
-    }
-  }, [session, isSignedIn, navigate]);
+useEffect(() => {
+  if (session && isSignedIn && !loading) {
+    navigate("/home");
+  }
+}, [session, isSignedIn, loading, navigate]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -67,11 +70,18 @@ export default function CustomSignupForm() {
         formData.append("name", name);
         if (selectedFile) formData.append("profile", selectedFile);
 
-        await axios.post(`${API_BASE}/users`, formData, {
+        const { data } = await axios.post(`${API_BASE}/users`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
 
         console.log("✅ User verified, profile saved!");
+        setUserData({
+          id: result.createdUserId!,
+          name,
+          email,
+          profile_img: data.profileImg,
+        });
+          navigate("/home");
       }
     } catch (err: any) {
       setError(err.errors?.[0]?.message || "Verification failed");
