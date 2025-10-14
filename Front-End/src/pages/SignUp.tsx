@@ -109,7 +109,6 @@ useEffect(() => {
 
           {!pendingVerification ? (
             <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
-              {/* Avatar upload */}
               <div className="flex justify-center">
                 <div className="relative w-24 h-24 rounded-full bg-[#f56565]/20 flex items-center justify-center text-[#f56565]">
                   {profileImg ? (
@@ -137,7 +136,6 @@ useEffect(() => {
                 </div>
               </div>
 
-              {/* Inputs */}
               <Input placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} />
               <Input
                 placeholder="Email"

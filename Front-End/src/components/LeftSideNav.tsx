@@ -3,9 +3,7 @@ import { LayoutDashboard } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import { useClerk } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
-import { BanknoteArrowDown } from 'lucide-react';
-import { BanknoteArrowUp } from 'lucide-react';
-import { LogOut } from 'lucide-react';
+import { BanknoteArrowDown, BanknoteArrowUp, LogOut } from 'lucide-react';
 
 interface LeftSideNavProps {
   setActive: (id: string) => void;

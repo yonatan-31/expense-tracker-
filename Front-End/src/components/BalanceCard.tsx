@@ -1,6 +1,4 @@
-import { CreditCard } from "lucide-react"
-import { Wallet } from 'lucide-react';
-import { ReceiptText } from 'lucide-react';
+import { CreditCard, Wallet, ReceiptText } from "lucide-react"
 
 interface BalanceProp {
     totalValue: number | undefined

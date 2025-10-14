@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import type { RecentTransaction, ExpenseItem, IncomeItem } from "../types/transactions"
 
-const API_BASE = import.meta.env.VITE_API_BASE
+const API_BASE = import.meta.env.VITE_API_BASE ;
 
 
 interface Summary {
@@ -21,7 +21,6 @@ export const useSummary = (userId?: string) => {
       try {
         const res = await axios.get(`${API_BASE}/summary/${userId}`)
         setData(res.data)
-
       } catch (err: any) {
         setError(err.message || "Failed to fetch summary")
       }

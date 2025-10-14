@@ -33,12 +33,13 @@ const Income = () => {
       }
     })();
   }, [userData?.id]);
-
+  const isListAva = list?.length > 0;
   return (
     <div className=' flex justify-center h-screen p-5 bg-gray-50 relative'>
       <div className='w-full xl:max-w-[90%]'>
         <Overview type="income" list={list} setList={setList} />
-        <IncomeSources list={list} setList={setList} />
+      {  isListAva &&
+        <IncomeSources list={list} setList={setList} />}
       </div>
     </div>
   )

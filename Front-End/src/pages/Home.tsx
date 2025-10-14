@@ -1,19 +1,19 @@
 import { useState, useRef, useEffect } from 'react';
-import Dashbored from "../components/Dashbored";
+import Dashbored from "./Dashbored";
 import LeftSideNav from "../components/LeftSideNav";
 import Income from './Income';
 import Expense from './Expense';
 import { Menu } from 'lucide-react';
 import { useUser } from "@/context/UserContext";
-import { useSummary, useRecentTransactions } from "@/hooks/useDashboardData";
-import EmptyStateBanner from "@/components/EmptyStateBanner";
 import axios from "axios";
 import { useUser as useClerkUser } from "@clerk/clerk-react";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 const Home = () => {
-    const { active, setActive, userData, setOpenAddType, setUserData } = useUser();
+    const { active, setActive, userData, setUserData } = useUser();
     const { user } = useClerkUser();
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const sidebarRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (!user || userData) return;
@@ -31,12 +31,6 @@ const Home = () => {
         fetchUser();
       }, [user, userData]);
 
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const sidebarRef = useRef<HTMLDivElement>(null);
-    const userId = userData?.id
-    const { data: summary } = useSummary(userId)
-    const { data: recentTransactions } = useRecentTransactions(userId)
-    const [isEmpty, setIsEmpty] = useState(false)
 
     // Detect clicks outside of sidebar
     useEffect(() => {
@@ -78,29 +72,6 @@ const Home = () => {
         setIsSidebarOpen((prev) => !prev)
     }
 
-useEffect(() => {
-    useSummary(userId)//
-    const isEmpty = !!userId && (
-        (summary?.totalIncome ?? 0) === 0 &&
-        (summary?.totalExpense ?? 0) === 0 &&
-        (recentTransactions?.length ?? 0) === 0
-    )
-    setIsEmpty(isEmpty)
-}, [summary]);
-
-console.log("isEmpty", isEmpty);
-console.log("summary", summary);
-
-
-    const handleAddIncome = () => {
-        setActive("income")
-        setOpenAddType("income")
-    }
-
-    const handleAddExpense = () => {
-        setActive("expense")
-        setOpenAddType("expense")
-    }
 
     return (
         <div className='select-none'>
@@ -121,21 +92,10 @@ console.log("summary", summary);
                 >
                     <LeftSideNav active={active} setActive={setActive} />
                 </div>
-                <div className="flex-1 sm:ml-48 md:ml-60 xl:ml-80">
-                {isEmpty && active === "dashboard" ? (
-                    <div className="flex flex-col justify-center items-center h-full px-2 sm:px-4 md:px-6 mt-3">
-                        <EmptyStateBanner
-                          show={isEmpty}
-                          onAddIncome={handleAddIncome}
-                          onAddExpense={handleAddExpense}
-                        />
-                        <img src="/unnamed.png" alt="Empty State" className="w-1/2 h-1/2" />
-                    </div>) :
-                    (renderContent())
-                }
+                <div className="flex-1 sm:ml-48 md:ml-60 xl:ml-80">             
+                    {renderContent()}
                 </div>
             </div>
-
         </div>
     );
 };

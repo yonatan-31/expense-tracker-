@@ -1,7 +1,7 @@
+import { useEffect, useState } from 'react';
 import Overview from '@/components/Overview'
 import ExpenseCategories from "@/components/ExpenseCategories"
 import axios from 'axios';
-import { useEffect, useState } from 'react';
 import { useUser } from "@/context/UserContext";
 import type { ExpenseItem, RecentTransaction } from '../types/transactions';
 const API_BASE = import.meta.env.VITE_API_BASE
@@ -32,11 +32,14 @@ const Expense = () => {
 
     fetchIncome();
   }, [userData?.id]);
+  const isListAva = list?.length > 0;
+
   return (
     <div className='flex justify-center h-screen p-5 bg-gray-50 relative'>
       <div className='w-full xl:max-w-[90%]'>
         <Overview type="expense" list={list} setList={setList} />
-        <ExpenseCategories list={list} setList={setList} />
+       { isListAva &&
+        <ExpenseCategories list={list} setList={setList} />}
       </div>
     </div>
   )
