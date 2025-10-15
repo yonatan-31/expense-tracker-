@@ -4,12 +4,50 @@ import type { RecentTransaction, ExpenseItem, IncomeItem } from "../types/transa
 
 const API_BASE = import.meta.env.VITE_API_BASE ;
 
+type TransactionType = "income" | "expense";
 
 interface Summary {
   totalIncome: number
   totalExpense: number
   balance: number
 }
+
+export const useList = (type: TransactionType, userId?: string) => {
+  const [list, setList] = useState<RecentTransaction[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    const fetchTransactions = async () => {
+      try {
+        const res = await axios.get(`${API_BASE}/${type}/${userId}`);
+        const normalizedData: RecentTransaction[] = res.data.map(
+          (item: any) => ({
+            id: item.id,
+            amount: item.amount,
+            category:
+              type === "income"
+                ? item.income_source?.trim() || "Uncategorized"
+                : item.expense_category?.trim() || "Uncategorized",
+            created_at: item.date,
+            emoji: item.emoji,
+            type,
+          })
+        );
+
+        setList(normalizedData);
+      } catch (err: any) {
+        console.error("Error fetching user:", err);
+        setError(err?.message ?? "Failed to fetch transactions");
+      }
+    };
+
+    fetchTransactions();
+  }, [userId, type]);
+
+  return { list, setList, error };
+};
 
 export const useSummary = (userId?: string) => {
   const [data, setData] = useState<Summary | null>(null)

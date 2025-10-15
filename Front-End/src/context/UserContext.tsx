@@ -1,7 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
 
-
 interface UserData {
   id: string;
   email: string;
@@ -16,7 +15,9 @@ interface UserContextType {
   isEditOpen: boolean;
   active: string;
   openAddType: "income" | "expense" | null;
-  setOpenAddType: React.Dispatch<React.SetStateAction<"income" | "expense" | null>>;
+  setOpenAddType: React.Dispatch<
+    React.SetStateAction<"income" | "expense" | null>
+  >;
   setUserData: React.Dispatch<React.SetStateAction<UserData | null>>;
 }
 
@@ -25,12 +26,26 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [active, setActive] = useState("dashboard")
-  const [openAddType, setOpenAddType] = useState<"income" | "expense" | null>(null)
+  const [active, setActive] = useState("dashboard");
+  const [openAddType, setOpenAddType] = useState<"income" | "expense" | null>(
+    null
+  );
+
 
 
   return (
-    <UserContext.Provider value={{ userData, setUserData, setIsEditOpen, isEditOpen, active, setActive, openAddType, setOpenAddType }}>
+    <UserContext.Provider
+      value={{
+        userData,
+        setUserData,
+        setIsEditOpen,
+        isEditOpen,
+        active,
+        setActive,
+        openAddType,
+        setOpenAddType,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );
