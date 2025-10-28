@@ -11,7 +11,14 @@ const supabase = createClient(
     process.env.SUPABASE_KEY
 );
 
-
+const { Pool } = pkg;
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    require: true,             // ✅ Force SSL
+    rejectUnauthorized: false, // ✅ Allow self-signed certificate
+  },
+});
 const allowedOrigins = [
     "https://expense-tracker8.vercel.app",
     "http://localhost:5173"
